@@ -1,11 +1,11 @@
 {
   "name": "rest-endpoint",
-  "version": "1.0.2",
-  "description": "Generate REST CRUD endpoints based on your ORM.",
+  "version": "1.0.3",
+  "description": "Generate CRUD endpoints from a Mongoose model.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lucas Scariot",
-  "license": "ISC"
+  "license": "Apache 2.0"
 }
