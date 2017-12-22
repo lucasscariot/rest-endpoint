@@ -1,13 +1,13 @@
 # Rest Endpoint
 > Generate REST CRUD endpoints based on your ORM.
 
-### Installation
+## Installation
 `npm install --save rest-endpoint`
 
 `yarn add rest-endpoint`
 
 
-### Configuration
+## Configuration
 ```
 import mongoose from 'mongoose'
 import RestEndpoint from 'rest-endpoint'
@@ -33,7 +33,7 @@ app.set('port', process.env.PORT || 3000)
 app.listen(app.get('port'))
 ```
 
-### Endpoints
+## Endpoints
 - **GET** -> /model
 - **GET** -> /model/*:recordId*
 - **PUT** -> /model/*:recordId*
