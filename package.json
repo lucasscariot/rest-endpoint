@@ -1,8 +1,16 @@
 {
   "name": "rest-endpoint",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Generate CRUD endpoints from a Mongoose model.",
   "main": "index.js",
+  "keywords": [
+     "mongoose",
+     "crud",
+     "model",
+     "rest",
+     "endpoint",
+     "generate"
+   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
