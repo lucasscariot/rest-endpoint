@@ -13,16 +13,16 @@ module.exports = class Api {
   _getFields(model) {
     return Object.keys(model.schema.obj)
   }
-  
+
   _getFieldAttribute(model, fieldName) {
     return model.schema.paths[fieldName]
   }
-  
+
   _getReferenceFields(model) {
     return this._getFields(model).filter((field) =>
       this._getFieldAttribute(model, field).options.ref)
   }
-  
+
   _getFieldInstance(model, fieldName) {
     const attributes = this._getFieldAttribute(model, fieldName)
     return attributes && attributes.instance
@@ -32,19 +32,21 @@ module.exports = class Api {
     if (!n) { return '' }
     return n[n.length - 1] === '/' ? n : n + '/'
   }
-  
+
   _payloadFilter(model, body) {
     const fields = this._getFields(model)
     const record = {}
     const errors = {}
-    
+
     fields.forEach((fieldName) => {
-      if (!body[fieldName]) { return }
-      if (body[fieldName] && typeof body[fieldName] ===
-        this._getFieldInstance(model, fieldName).toLowerCase()) {
+      if (body[fieldName] === undefined) { return }
+      if ((typeof body[fieldName] === this._getFieldInstance(model, fieldName).toLowerCase()) ||
+      (this._getFieldInstance(model, fieldName) === 'Array' &&
+      body[fieldName] instanceof Array)) {
         record[fieldName] = body[fieldName]
       } else {
-        errors[fieldName] = `Should be a ${this._getFieldInstance(model, fieldName)}.`
+        errors[fieldName] = `Should be a ${this._getFieldInstance(model, fieldName)}`
+        + ` instead of ${typeof body[fieldName]}.`
       }
     })
 
@@ -71,7 +73,7 @@ module.exports = class Api {
 
   post(req, res, model) {
     const { record, errors } = this._payloadFilter(model, req.body)
-    
+
     if (errors) {
       res.status(400).json(errors)
       return
@@ -84,16 +86,22 @@ module.exports = class Api {
 
   put(req, res, model) {
     const { record, errors } = this._payloadFilter(model, req.body)
-    
+
     if (errors) {
       res.status(400).json(errors)
       return
     }
 
+    console.log();
+    console.log();
+    console.log(record);
+    console.log();
+    console.log();
+
     model
     .findOneAndUpdate(
       { _id: req.params.recordId },
-      { $set: req.body },
+      { $set: record },
       { new: true })
     .then((record) => res.status(200).json(record))
     .catch((err) => this._catch(err, res))
