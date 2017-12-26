@@ -1,7 +1,12 @@
 {
   "name": "rest-endpoint",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Generate CRUD endpoints from a Mongoose model.",
+  "author": "Lucas Scariot <lucas@scariot.fr>",
+  "repository": {
+   "type": "git",
+   "url": "git://github.com/lucasscariot/rest-endpoint.git"
+ },
   "main": "index.js",
   "keywords": [
     "mongoose",
@@ -14,6 +19,5 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Lucas Scariot",
   "license": "Apache 2.0"
 }
