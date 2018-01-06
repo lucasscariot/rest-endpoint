@@ -16,8 +16,6 @@ const payloadFilter = (model, body) => {
   const record = {}
   const errors = {}
 
-  console.log(body);
-
   fields.forEach((fieldName) => {
     if (body[fieldName] === undefined) { return }
     if ((typeof body[fieldName] === getFieldType(model, fieldName).toLowerCase()) ||
@@ -44,6 +42,7 @@ const getAll = (req, res, model) => {
     .findAll({
       limit: limit,
       offset: limit * page,
+      order: ['id'],
     })
     .then((records) => res.json(records))
 }
@@ -59,9 +58,6 @@ const getOne = (req, res, model) => {
 
 const post = (req, res, model) => {
   const { record, errors } = payloadFilter(model, req.body)
-
-
-  console.log(record);
 
   if (errors) {
     res.status(400).json(errors)

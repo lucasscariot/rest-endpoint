@@ -1,7 +1,7 @@
 const mongooseController = require('./mongoose')
 const sequelizeController = require('./sequelize')
 
-module.exports = class Api {
+class Api {
   constructor(params) {
     const {
       app,
@@ -58,3 +58,5 @@ module.exports = class Api {
     this.express.delete(`/${this.namespace + modelName}/:recordId`, (req, res) => this.remove(req, res, model))
   }
 }
+
+module.exports = Api
