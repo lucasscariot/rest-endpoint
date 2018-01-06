@@ -2,40 +2,44 @@
 > Generate REST CRUD endpoints based on your ORM.
 
 ## Installation
-`npm install --save rest-endpoint`
+`npm install rest-endpoint --save`
 
-`yarn add rest-endpoint`
-
+`yarn add rest-endpoint --save`
 
 ## Configuration
 ```
-import mongoose from 'mongoose'
-import RestEndpoint from 'rest-endpoint'
-import { app } from './app'
-import channels from './schemas/channels'
-import users from './schemas/users'
-import conversations from './schemas/conversations'
-import messages from './schemas/messages'
+const express = require('express')
+const RestEndpoint = require('rest-endpoint')
+const app = express()
+const models = require('./models')
 
-mongoose.connect(...)
+
+// Sequelize
 const api = new RestEndpoint({
   app,
-  mongoose,
+  sequelize: true,
   namespace: 'api',
 })
 
-api.crud(channels)
-api.crud(users)
-api.crud(conversations)
-api.crud(messages)
 
-app.set('port', process.env.PORT || 3000)
-app.listen(app.get('port'))
+// Mongoose
+const api = new RestEndpoint({
+  app,
+  mongoose: true,
+  namespace: 'api',
+})
+
+api.crud(models.channels)
+api.crud(models.users)
+api.crud(models.conversations)
+api.crud(models.messages)
 ```
 
 ## Endpoints
-- **GET** -> /model
-- **GET** -> /model/*:recordId*
-- **PUT** -> /model/*:recordId*
-- **POST** -> /model
-- **DELETE** -> /model/*:recordId*
+Action     | Http Method  | Endpoint          | Description
+-----------|--------------|-------------------|------------
+List       | GET          | /model            | Get a listing of records
+Read       | GET          | /model/:id        | Get details about a record
+Create     | POST         | /model            | Create a record
+Update     | PUT          | /model/:id        | Update a record
+Delete     | DELETE       | /model/:id        | Delete a record
