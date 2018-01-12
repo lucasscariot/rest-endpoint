@@ -4,9 +4,9 @@
   "description": "Generate CRUD endpoints from a Mongoose or Sequelize model.",
   "author": "Lucas Scariot <lucas@scariot.fr>",
   "repository": {
-   "type": "git",
-   "url": "git://github.com/lucasscariot/rest-endpoint.git"
- },
+    "type": "git",
+    "url": "git://github.com/lucasscariot/rest-endpoint.git"
+  },
   "main": "index.js",
   "keywords": [
     "mongoose",
