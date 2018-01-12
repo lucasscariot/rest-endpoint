@@ -34,12 +34,32 @@ const payloadFilter = (model, body) => {
   return { record, errors }
 }
 
+const queryCreator = (model, searchValue) => {
+  const orQuery = [];
+
+  getFields(model).forEach((field) => {
+    const fieldQuery = {};
+    if (getFieldType(model, field) === 'string') {
+      fieldQuery[field] = { like: `%${searchValue}%` };
+      orQuery.push(fieldQuery);
+    }
+  })
+
+  return orQuery;
+}
+
 const getAll = (req, res, model) => {
   let page = parseInt(req.query.page) || 0
   let limit = parseInt(req.query.limit) || 10
+  const query = {};
+
+  if (req.query.search) {
+    query.$or = queryCreator(model, req.query.search);
+  }
 
   model
     .findAll({
+      where: query,
       limit: limit,
       offset: limit * page,
       order: ['id'],
