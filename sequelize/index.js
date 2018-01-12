@@ -39,8 +39,12 @@ const queryCreator = (model, searchValue) => {
 
   getFields(model).forEach((field) => {
     const fieldQuery = {};
-    if (getFieldType(model, field) === 'string') {
+    const type = getFieldType(model, field);
+    if (type === 'string') {
       fieldQuery[field] = { like: `%${searchValue}%` };
+      orQuery.push(fieldQuery);
+    } else if (type === 'integer') {
+      fieldQuery[field] = parseFloat(searchValue, 10) || null;
       orQuery.push(fieldQuery);
     }
   })
