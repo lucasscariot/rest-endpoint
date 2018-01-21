@@ -43,3 +43,10 @@ Read       | GET          | /model/:id        | Get details about a record
 Create     | POST         | /model            | Create a record
 Update     | PUT          | /model/:id        | Update a record
 Delete     | DELETE       | /model/:id        | Delete a record
+
+## Parameters
+### Search
+> Search for String, Integer and Boolean in all your collection.
+#### Route: /model
+
+- `https://.../api/users?search=Lucas`
