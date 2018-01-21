@@ -66,7 +66,11 @@ const queryCreator = (model, searchValue) => {
 const getAll = (req, res, model) => {
   let page = parseInt(req.query.page) || 0
   let limit = parseInt(req.query.limit) || 10
-  const orQuery = queryCreator(model, req.query.search)
+  let orQuery =  {}
+
+  if (req.query.search) {
+    orQuery = queryCreator(model, req.query.search)
+  }
 
   model
     .find().or(orQuery)
