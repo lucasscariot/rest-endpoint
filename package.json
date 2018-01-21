@@ -1,6 +1,6 @@
 {
   "name": "rest-endpoint",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Generate CRUD endpoints from a Mongoose or Sequelize model.",
   "author": "Lucas Scariot <lucas@scariot.fr>",
   "repository": {
