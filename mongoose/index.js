@@ -18,11 +18,12 @@ const payloadFilter = (model, body) => {
   const record = {}
   const errors = {}
 
+
   fields.forEach((fieldName) => {
-    if (body[fieldName] === undefined) { return }
-    if ((typeof body[fieldName] === getFieldType(model, fieldName).toLowerCase()) ||
+    if (body[fieldName] === undefined || !getFieldType(model, fieldName)) { return }
+    if ((typeof body[fieldName] === getFieldType(model, fieldName)) ||
     (getFieldType(model, fieldName) === 'Array' &&
-    body[fieldName] instanceof Array)) {
+    body[fieldName] instanceof Array) || getFieldType(model, fieldName) === 'date' ) {
       record[fieldName] = body[fieldName]
     } else {
       errors[fieldName] = `Should be a ${getFieldType(model, fieldName)}`
