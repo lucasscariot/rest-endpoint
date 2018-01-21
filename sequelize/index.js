@@ -29,36 +29,45 @@ const payloadFilter = (model, body) => {
   })
 
   if (Object.keys(errors).length === 0) {
-    return { record };
+    return { record }
   }
   return { record, errors }
 }
 
 const queryCreator = (model, searchValue) => {
-  const orQuery = [];
+  const orQuery = []
 
   getFields(model).forEach((field) => {
-    const fieldQuery = {};
-    const type = getFieldType(model, field);
+    const fieldQuery = {}
+    const type = getFieldType(model, field)
+
     if (type === 'string') {
-      fieldQuery[field] = { like: `%${searchValue}%` };
-      orQuery.push(fieldQuery);
+      fieldQuery[field] = { ilike: `%${searchValue}%` }
+      orQuery.push(fieldQuery)
     } else if (type === 'integer') {
-      fieldQuery[field] = parseFloat(searchValue, 10) || null;
-      orQuery.push(fieldQuery);
+      fieldQuery[field] = parseFloat(searchValue, 10) || null
+      orQuery.push(fieldQuery)
+    } else if (type === 'boolean') {
+      if (searchValue === 'true') {
+        fieldQuery[field] = searchValue
+        orQuery.push(fieldQuery)
+      } else if (searchValue === 'false') {
+        fieldQuery[field] = searchValue
+        orQuery.push(fieldQuery)
+      }
     }
   })
 
-  return orQuery;
+  return orQuery
 }
 
 const getAll = (req, res, model) => {
   let page = parseInt(req.query.page) || 0
   let limit = parseInt(req.query.limit) || 10
-  const query = {};
+  const query = {}
 
   if (req.query.search) {
-    query.$or = queryCreator(model, req.query.search);
+    query.$or = queryCreator(model, req.query.search)
   }
 
   model

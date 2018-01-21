@@ -31,17 +31,45 @@ const payloadFilter = (model, body) => {
   })
 
   if (Object.keys(errors).length === 0) {
-    return { record };
+    return { record }
   }
   return { record, errors }
+}
+
+const queryCreator = (model, searchValue) => {
+  const orQuery = []
+
+  getFields(model).forEach((field) => {
+    const fieldQuery = {}
+    const type = getFieldType(model, field)
+
+    if (type === 'string') {
+      fieldQuery[field] = searchValue
+      orQuery.push(fieldQuery)
+    } else if (type === 'number') {
+      fieldQuery[field] = parseFloat(searchValue, 10) || null
+      orQuery.push(fieldQuery)
+    } else if (type === 'boolean') {
+      if (searchValue === 'true') {
+        fieldQuery[field] = searchValue
+        orQuery.push(fieldQuery)
+      } else if (searchValue === 'false') {
+        fieldQuery[field] = searchValue
+        orQuery.push(fieldQuery)
+      }
+    }
+  })
+
+  return orQuery
 }
 
 const getAll = (req, res, model) => {
   let page = parseInt(req.query.page) || 0
   let limit = parseInt(req.query.limit) || 10
+  const orQuery = queryCreator(model, req.query.search)
 
   model
-    .find()
+    .find().or(orQuery)
     .limit(limit)
     .skip(limit * page)
     .then((records) => res.json(records))
