@@ -64,7 +64,7 @@ const queryCreator = (model, searchValue) => {
   return orQuery
 }
 
-const getAll = (req, res, model) => {
+const getAll = (req, res, model, params) => {
   let page = parseInt(req.query.page) || 0
   let limit = parseInt(req.query.limit) || 10
   let orQuery =  {}
@@ -75,13 +75,15 @@ const getAll = (req, res, model) => {
 
   model
     .find().or(orQuery)
+    .select(params.exclude.map(field => '-' + field))
     .limit(limit)
     .skip(limit * page)
     .then((records) => res.json(records))
 }
 
-const getOne = (req, res, model) => {
+const getOne = (req, res, model, params) => {
   model.findById(req.params.recordId)
+    .select(params.exclude.map(field => '-' + field))
     .catch((err) => error404(err, res))
     .then((record) => {
       if (!record) { return error404(null, res) }

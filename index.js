@@ -31,31 +31,58 @@ class Api {
   _getReferenceFields(model) { return this.orm.getReferenceFields(model) }
 
 
-    getAll(req, res, model) { return this.orm.getAll(req, res, model) }
+    getAll(req, res, model, params) { return this.orm.getAll(req, res, model, params) }
 
-    getOne(req, res, model) { return this.orm.getOne(req, res, model) }
+    getOne(req, res, model, params) { return this.orm.getOne(req, res, model, params) }
 
-    post(req, res, model) { return this.orm.post(req, res, model) }
+    post(req, res, model, params) { return this.orm.post(req, res, model, params) }
 
-    put(req, res, model) { return this.orm.put(req, res, model) }
+    put(req, res, model, params) { return this.orm.put(req, res, model, params) }
 
-    remove(req, res, model) { return this.orm.remove(req, res, model) }
+    remove(req, res, model, params) { return this.orm.remove(req, res, model, params) }
 
   _namespaceFormater(n) {
     if (!n) { return '' }
     return n[n.length - 1] === '/' ? n : n + '/'
   }
 
-  crud(model) {
+  getMiddleware(fn) {
+    if (fn) { return fn }
+    if (fn === false) {
+      return (req, res, next) => { res.sendStatus(404) }
+    }
+    return (req, res, next) => { next() }
+  }
+
+  crud(model, params = { auth: {} }) {
+    let { auth } = params
+
+    if (!auth) { auth = {} }
     if (!model.db && !model.sequelize) { throw new Error('API | Wrong parameter') }
     const modelName = this._modelName(model)
 
+
     this.schemas.push(model)
-    this.express.get(`/${this.namespace + modelName}`, (req, res) => this.getAll(req, res, model))
-    this.express.get(`/${this.namespace + modelName}/:recordId`, (req, res) => this.getOne(req, res, model))
-    this.express.put(`/${this.namespace + modelName}/:recordId`, (req, res) => this.put(req, res, model))
-    this.express.post(`/${this.namespace + modelName}`, (req, res) => this.post(req, res, model))
-    this.express.delete(`/${this.namespace + modelName}/:recordId`, (req, res) => this.remove(req, res, model))
+    this.express.get(`/${this.namespace + modelName}`,
+      this.getMiddleware(auth.get), (req, res) => this.getAll(req, res, model, params))
+    this.express.get(`/${this.namespace + modelName}/:recordId`,
+      this.getMiddleware(auth.get), (req, res) => this.getOne(req, res, model, params))
+    this.express.put(`/${this.namespace + modelName}/:recordId`,
+      this.getMiddleware(auth.put), (req, res) => this.put(req, res, model, params))
+    this.express.post(`/${this.namespace + modelName}`,
+      this.getMiddleware(auth.post) , (req, res) => this.post(req, res, model, params))
+    this.express.delete(`/${this.namespace + modelName}/:recordId`,
+      this.getMiddleware(auth.delete), (req, res) => this.remove(req, res, model, params))
+    this.express.options(`/${this.namespace + modelName}`, (req, res) => {
+      var headers = {};
+      headers["Access-Control-Allow-Origin"] = "*";
+      headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
+      headers["Access-Control-Allow-Credentials"] = false;
+      headers["Access-Control-Max-Age"] = '86400';
+      headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept";
+      res.writeHead(200, headers);
+      res.end();
+    })
   }
 }
 
