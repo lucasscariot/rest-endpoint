@@ -47,7 +47,7 @@ const queryCreator = (model, searchValue) => {
     if (type === 'string') {
       fieldQuery[field] = searchValue
       orQuery.push(fieldQuery)
-    } else if (type === 'number') {
+    } else if (type === 'number' && !isNaN(searchValue)) {
       fieldQuery[field] = parseFloat(searchValue, 10) || null
       orQuery.push(fieldQuery)
     } else if (type === 'boolean') {
