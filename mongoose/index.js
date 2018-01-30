@@ -67,23 +67,34 @@ const queryCreator = (model, searchValue) => {
 const getAll = (req, res, model, params) => {
   let page = parseInt(req.query.page) || 0
   let limit = parseInt(req.query.limit) || 10
+  let exclude= [];
   let orQuery =  {}
 
   if (req.query.search) {
     orQuery = queryCreator(model, req.query.search)
   }
 
+  if (params.exclude) {
+    exclude = params.exclude.map(field => '-' + field)
+  }
+
   model
     .find().or(orQuery)
-    .select(params.exclude.map(field => '-' + field))
+    .select(exclude)
     .limit(limit)
     .skip(limit * page)
     .then((records) => res.json(records))
 }
 
 const getOne = (req, res, model, params) => {
+  let exclude= [];
+
+  if (params.exclude) {
+    exclude = params.exclude.map(field => '-' + field)
+  }
+
   model.findById(req.params.recordId)
-    .select(params.exclude.map(field => '-' + field))
+    .select(exclude)
     .catch((err) => error404(err, res))
     .then((record) => {
       if (!record) { return error404(null, res) }
