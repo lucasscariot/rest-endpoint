@@ -63,17 +63,18 @@ class Api {
 
 
     this.schemas.push(model)
-    this.express.get(`/${this.namespace + modelName}`,
-      this.getMiddleware(auth.get), (req, res) => this.getAll(req, res, model, params))
-    this.express.get(`/${this.namespace + modelName}/:recordId`,
-      this.getMiddleware(auth.get), (req, res) => this.getOne(req, res, model, params))
-    this.express.put(`/${this.namespace + modelName}/:recordId`,
-      this.getMiddleware(auth.put), (req, res) => this.put(req, res, model, params))
-    this.express.post(`/${this.namespace + modelName}`,
-      this.getMiddleware(auth.post) , (req, res) => this.post(req, res, model, params))
-    this.express.delete(`/${this.namespace + modelName}/:recordId`,
-      this.getMiddleware(auth.delete), (req, res) => this.remove(req, res, model, params))
-    this.express.options(`/${this.namespace + modelName}`, (req, res) => {
+    const route = this.namespace + modelName
+    this.express.get(`/${route}`, this.getMiddleware(auth.get),
+      (req, res) => this.getAll(req, res, model, params))
+    this.express.get(`/${route}/:recordId`, this.getMiddleware(auth.get),
+      (req, res) => this.getOne(req, res, model, params))
+    this.express.put(`/${route}/:recordId`, this.getMiddleware(auth.put),
+      (req, res) => this.put(req, res, model, params))
+    this.express.post(`/${route}`, this.getMiddleware(auth.post) ,
+      (req, res) => this.post(req, res, model, params))
+    this.express.delete(`/${route}/:recordId`, this.getMiddleware(auth.delete),
+      (req, res) => this.remove(req, res, model, params))
+    this.express.options(`/${route}`, (req, res) => {
       var headers = {};
       headers["Access-Control-Allow-Origin"] = "*";
       headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
